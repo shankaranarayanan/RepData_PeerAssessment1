@@ -8,15 +8,32 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r}
+activity <- read.csv("activity.csv",stringsAsFactors=F)
+activity$date <- as.Date(activity$date)
+#activity$interval <- strptime(activity$interval,format = "%H:%M")
+activity$interval <- paste(as.integer(activity$interval/100),activity$interval%%100,sep = ":")
+activity$interval <- paste(activity$date,activity$interval,sep = " ")
+head(activity)
+```
 
 
 ## What is mean total number of steps taken per day?
+```{r}
+stepsPerDay <- aggregate(steps~date,activity,sum)
+hist(stepsPerDay$steps,xlab = "Total number of steps per day",breaks = nrow(stepsPerDay))
+meanStepsPerDay <- aggregate(steps~date,activity,mean)
+medianStepsPerDay <- aggregate(steps~date,activity,median)
+meanStepsPerDay
+medianStepsPerDay
+```
 
 
 
 ## What is the average daily activity pattern?
-
-
+```{r}
+plot(x = activity$interval,y = mean(stepsPerDay$steps,na.rm = T),type="l")
+```
 
 ## Imputing missing values
 
