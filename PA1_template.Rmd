@@ -32,11 +32,37 @@ medianStepsPerDay
 
 ## What is the average daily activity pattern?
 ```{r}
-plot(x = activity$interval,y = mean(stepsPerDay$steps,na.rm = T),type="l")
+timePlot <- aggregate(steps~interval,activity,mean)
+with(timePlot, plot(x = interval,y = steps,type = "l"))
+timePlot[timePlot$steps== max(timePlot$steps),]
 ```
 
 ## Imputing missing values
-
+```{r}
+nrow(activity[is.na(activity),])
+allNAs <- activity[is.na(activity$steps),]
+nonNAs <- activity[!is.na(activity$steps),]
+allNAs$steps[allNAs$interval==timePlot$interval] <- timePlot$steps
+newActivity <- merge(allNAs,nonNAs, all = T)
+stepsPerDay <- aggregate(steps~date,newActivity,sum)
+hist(stepsPerDay$steps,xlab = "Total number of steps per day",breaks = nrow(stepsPerDay))
+meanStepsPerDay <- aggregate(steps~date,newActivity,mean)
+medianStepsPerDay <- aggregate(steps~date,newActivity,median)
+meanStepsPerDay
+medianStepsPerDay
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+weekDays <- weekdays(newActivity$date,abbreviate = T)
+weekDayFactor <- character()
+for(i in weekDays) if(i %in% c("Sat","Sun")) weekDayFactor <- c(weekDayFactor,"Weekend") else weekDayFactor <- c(weekDayFactor,"Weekday")
+newActivity$weekDay <- as.factor(weekDayFactor)
+
+newTimePlot <- aggregate(steps~interval+weekDay,newActivity,mean)
+par(mfrow=c(2,1))
+with(newTimePlot[newTimePlot$weekDay=="Weekend",], plot(x = interval,y = steps,type = "l",main = "weekend",ylab = "Number of steps"))
+with(newTimePlot[newTimePlot$weekDay=="Weekday",], plot(x = interval,y = steps,type = "l",main="weekday",ylab = "Number of steps"))
+```
+
