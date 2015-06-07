@@ -25,12 +25,13 @@ stepsPerDay <- aggregate(steps~date,activity,sum)
 hist(stepsPerDay$steps,xlab = "Total number of steps per day",breaks = nrow(stepsPerDay))
 
 #Calculate and report the mean and median of the total number of steps taken per day
-meanStepsPerDay <- aggregate(steps~date,activity,mean)
-medianStepsPerDay <- aggregate(steps~date,activity,median)
+#meanStepsPerDay <- aggregate(steps~date,activity,mean)
+#medianStepsPerDay <- aggregate(steps~date,activity,median)
 print("The meanStepsPerDay is")
-meanStepsPerDay
+mean(stepsPerDay$steps,na.rm = T)
 print("The medianStepsPerDay is ")
-medianStepsPerDay
+median(stepsPerDay$steps,na.rm = T)
+
 ```
 
 ## What is the average daily activity pattern?
@@ -52,7 +53,7 @@ allNAs <- activity[is.na(activity$steps),]
 nonNAs <- activity[!is.na(activity$steps),]
 print("The total number of missing rows is ")
 nrow(allNAs)
-#Devise a strategy for filling in all of the missing values in the dataset. Using mean for that 5-minute interval, 
+#Devise a strategy for filling in all of the missing values in the dataset. Strategy is using mean for that 5-minute interval, 
 allNAs$steps[allNAs$interval==timePlot$interval] <- timePlot$steps
 
 #Create a new dataset that is equal to the original dataset but with the missing data filled in.
@@ -63,12 +64,10 @@ stepsPerDay <- aggregate(steps~date,newActivity,sum)
 hist(stepsPerDay$steps,xlab = "Total number of steps per day",breaks = nrow(stepsPerDay))
 
 #Calculate and report the mean and median total number of steps taken per day. 
-meanStepsPerDay <- aggregate(steps~date,newActivity,mean)
-medianStepsPerDay <- aggregate(steps~date,newActivity,median)
 print("The meanStepsPerDay is")
-meanStepsPerDay
+mean(stepsPerDay$steps,na.rm = T)
 print("The medianStepsPerDay is ")
-medianStepsPerDay
+median(stepsPerDay$steps,na.rm = T)
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
